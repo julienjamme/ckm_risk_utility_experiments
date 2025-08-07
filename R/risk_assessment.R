@@ -1,15 +1,4 @@
-library(ckm)
-library(dplyr)
-
-params <- data.frame(
-  D = 10,
-  V = 10,
-  js = 3,
-  s = 11,
-  lambda  = 5
-)
-
-#' Title
+#' Risk assessment based on backward transition probability 
 #'
 #' @param D max deviation parameter
 #' @param V variance of the deviation
@@ -28,6 +17,14 @@ params <- data.frame(
 #'  - pi_hat : prior on counts distribution P(X=i)
 #'  - pij : transition probabilty: P(X'=j|X=i)
 #'  - qij : inverted transition probability: P(X=i|X'=j)
+#'  
+#' @details
+#' For i in N and j in N,
+#' qij = P(X=i|X'=j) = P(X=i) * pij / P(X'= j)
+#' 
+#' The function here computes qIJ, where I and J can be sets of values:
+#' qIJ = P(X in I | X' in J)
+#'   
 #' @export
 #'
 #' @examples
@@ -40,10 +37,13 @@ risk_assessment <- function(
     prior_pi = c("custom","uniform","poisson"),
     Ncell = NULL,
     lambda = NULL,
-    freq,
+    freq = NULL,
+    freq_name = "tab",
     I,
     J
 ){
+  require(ckm)
+  require(dplyr)
   
   if(any(I > s+2*D)){
     message("The function is limited to i <= s+2*D")
@@ -57,7 +57,7 @@ risk_assessment <- function(
     message("The function is based on js < s")
     return(NULL)
   }
-  if(lambda <= 0){
+  if(prior_pi == "poisson" & (lambda <= 0 || is.null(lambda))){
     message("lambda has to be > 0")
     return(NULL)
   }
@@ -72,7 +72,7 @@ risk_assessment <- function(
     frequencies <- data.frame(
       i = 0:(s+2*D)
     ) |>
-      mutate(p_hat = dpois(i, params$lambda))
+      mutate(p_hat = dpois(i, lambda))
   }else if(prior_pi == "uniform"){
     frequencies <- data.frame(
       i = 0:(s+2*D),
@@ -87,7 +87,13 @@ risk_assessment <- function(
   }
   
   return(
-    ckm::assess_risk(trans, frequencies, I = I, J)
+    ckm::assess_risk(trans, frequencies, I = I, J) |>
+      mutate(
+        D = D, V = V, js = js,
+        tab = freq_name,
+        s = s
+      ) |>
+      relocate(D:s, .before = 1)
   )
 }
 
