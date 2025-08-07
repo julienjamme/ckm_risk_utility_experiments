@@ -1,0 +1,20 @@
+Package: ckm_risk_utility_experiments
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Remotes: InseeFrLab/ckm
+Imports: 
+    aws.s3,
+    data.table,
+    dplyr,
+    ggplot2,
+    latex2exp,
+    ptable,
+    purrr,
+    tictoc
