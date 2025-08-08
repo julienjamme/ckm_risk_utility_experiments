@@ -1,6 +1,8 @@
 library(ckm)
 library(dplyr)
 library(purrr)
+library(future)
+library(furrr)
 
 source("R/risk_assessment.R")
 source("R/utility_assessment.R")
@@ -39,10 +41,13 @@ frequencies_list <- list(
   )
 )
 
-all_results_l <- purrr::imap(
+
+plan(multisession, workers = length(frequencies_list))
+
+all_results_l <- future_imap(
   frequencies_list,
   \(fr,na){
-    cat("\n=========== ", na, " =================\n")
+    # cat("\n=========== ", na, " =================\n")
     utility <- purrr::pmap(
       params |> select(D,V=Vf,js) |> unique(),
       utility_assessment,
@@ -86,9 +91,13 @@ all_results_l <- purrr::imap(
   }
 )
 
+plan(sequential)
+
 all_RUs <- all_results_l |> purrr::list_rbind()
 
 save(all_RUs, file = "all_RUs.RData")
+
+
 
 
 library(ggplot2)
