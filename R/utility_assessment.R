@@ -77,8 +77,7 @@ utility_assessment <- function(
       full_join(
         freq |> mutate(i = ifelse(i>max_i,max_i,i)) |>
           group_by(i) |>
-          summarise(N = sum(N), .groups="drop") |>
-          mutate(p_hat = N/sum(N)),
+          summarise(p_hat = sum(p_hat), .groups="drop"),
         by = "i"
       ) |>
       filter(abs(v) < precision) |>
@@ -92,8 +91,7 @@ utility_assessment <- function(
       full_join(
         freq |> mutate(i = ifelse(i>max_i,max_i,i)) |>
           group_by(i) |>
-          summarise(N = sum(N), .groups="drop") |>
-          mutate(p_hat = N/sum(N)),
+          summarise(p_hat = sum(p_hat), .groups="drop"),
         by = "i"
       ) |> 
       filter(i > 0) |>
