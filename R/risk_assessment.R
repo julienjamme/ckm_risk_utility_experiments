@@ -86,8 +86,18 @@ risk_assessment <- function(
     }
   }
   
+  if(max(J) <= js){
+    vi <- paste(I, collapse = ", ")
+    vj <- paste(J, collapse = ", ")
+    risk_df <- expand.grid(i=vi,j=vj,KEEP.OUT.ATTRS = FALSE) |>
+      as.data.frame() |>
+      mutate(pi_hat = NA, pij = NA, qij = 0)
+  }else{
+    risk_df <- ckm::assess_risk(trans, frequencies, I = I, J)
+  }
+  
   return(
-    ckm::assess_risk(trans, frequencies, I = I, J) |>
+     risk_df |>
       mutate(
         D = D, V = V, js = js,
         tab = freq_name,
