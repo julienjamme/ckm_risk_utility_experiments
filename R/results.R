@@ -13,31 +13,33 @@ params <- read.csv(
   file = file.path("data", paste0("params",".csv")),
 )
 
+set.seed(4081789)
+
 rep_data <- "data"
 frequencies_list <- list(
   "freq_census_tab1" =  list(
     prior_pi = "custom",
-    freq = read.csv(file.path(rep_data, "freq_census_tab1.csv"))
+    freq = read.csv(file.path(rep_data, "freq_census_tab1.csv")) #78.7% de cases < 11 et 8.0% de cases > 30
     ),
   "freq_census_tab2" = list(
     prior_pi = "custom",
-    freq = read.csv(file.path(rep_data, "freq_census_tab2.csv"))
+    freq = read.csv(file.path(rep_data, "freq_census_tab2.csv")) #2.0% de cases < 11 et 96.9% de cases > 30
     ),
   "poisson5" = list(
     prior_pi = "custom",
-    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 5)) #98.7% de cases < 11
+    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 5)) #98.7% de cases < 11 et 0% de cases > 30
   ),
   "poisson10" = list(
     prior_pi = "custom",
-    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 10)) #58.3% de cases < 11
+    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 10)) #58.3% de cases < 11 et 0.02% de cases > 30
   ),
   "poisson15" = list(
     prior_pi = "custom",
-    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 15)) #11.9% de cases < 11
+    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 15)) #11.9% de cases < 11 et 8.0% de cases > 30
   ),
   "poisson20" = list(
     prior_pi = "custom",
-    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 20)) #1.1% de cases < 11
+    freq = data.frame(i = 0:100) |> mutate(p_hat = dpois(i, 20)) #1.1% de cases < 11 et 1.3% de cases > 30
   )
 )
 
@@ -99,48 +101,48 @@ save(all_RUs, file = "all_RUs.RData")
 
 
 
-
-library(ggplot2)
-
-ggplot(RU) +
-  geom_point(aes(x=1-U1, y=R1, color = as.factor(js), size = V)) +
-  geom_line(aes(x=1-U1, y=R1, group = as.factor(js),  color = as.factor(js))) +
-  facet_wrap(~D)
-
-ggplot(RU) +
-  geom_point(aes(x=1-U1, y=R1, color = V, shape = as.factor(D))) +
-  geom_line(aes(x=1-U1, y=R1, group = V,  color = V)) +
-  facet_wrap(~js, label="label_both")
-
-ggplot(RU) +
-  geom_point(aes(x=1-U1, y=R2, color = V, shape = as.factor(D))) +
-  geom_line(aes(x=1-U1, y=R2, group = V,  color = V)) +
-  facet_wrap(~js, label="label_both")
-
-
-ggplot(RU) +
-  geom_point(aes(x=U2, y=R2, color = V, shape = as.factor(D))) +
-  geom_line(aes(x=U2, y=R2, group = V,  color = V)) +
-  facet_wrap(~js, label="label_both")
-
-
-ggplot(RU) +
-  geom_point(aes(x=U2, y=R2, color = V)) +
-  geom_line(aes(x=U2, y=R2, group = as.factor(js), linetype =as.factor(js))) +
-  facet_wrap(~D, label="label_both")
-
-
-
-ggplot(RU) +
-  geom_point(aes(x=U2, y=R1, color = V)) +
-  geom_line(aes(x=U2, y=R1, group = as.factor(js), linetype =as.factor(js))) +
-  facet_wrap(~D, label="label_both")
-
-
-ggplot(RU) +
-  geom_point(aes(x=1-U3, y=R1, color = V)) +
-  geom_line(aes(x=1-U3, y=R1, group = as.factor(js), linetype =as.factor(js))) +
-  facet_wrap(~D, label="label_both")
+# 
+# library(ggplot2)
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=1-U1, y=R1, color = as.factor(js), size = V)) +
+#   geom_line(aes(x=1-U1, y=R1, group = as.factor(js),  color = as.factor(js))) +
+#   facet_wrap(~D)
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=1-U1, y=R1, color = V, shape = as.factor(D))) +
+#   geom_line(aes(x=1-U1, y=R1, group = V,  color = V)) +
+#   facet_wrap(~js, label="label_both")
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=1-U1, y=R2, color = V, shape = as.factor(D))) +
+#   geom_line(aes(x=1-U1, y=R2, group = V,  color = V)) +
+#   facet_wrap(~js, label="label_both")
+# 
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=U2, y=R2, color = V, shape = as.factor(D))) +
+#   geom_line(aes(x=U2, y=R2, group = V,  color = V)) +
+#   facet_wrap(~js, label="label_both")
+# 
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=U2, y=R2, color = V)) +
+#   geom_line(aes(x=U2, y=R2, group = as.factor(js), linetype =as.factor(js))) +
+#   facet_wrap(~D, label="label_both")
+# 
+# 
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=U2, y=R1, color = V)) +
+#   geom_line(aes(x=U2, y=R1, group = as.factor(js), linetype =as.factor(js))) +
+#   facet_wrap(~D, label="label_both")
+# 
+# 
+# ggplot(RU) +
+#   geom_point(aes(x=1-U3, y=R1, color = V)) +
+#   geom_line(aes(x=1-U3, y=R1, group = as.factor(js), linetype =as.factor(js))) +
+#   facet_wrap(~D, label="label_both")
 
 
 
