@@ -1,10 +1,5 @@
 
 source("R/risk_assessment.R")
-D 0 2 6 10
-5 0.1 2.1 - -
-  10 0.8 2.1 12.1 -
-  15 2.1 2.2 12.1 30.1
-20 5.9 6.0 12.1 30.1
 
 
 params1 <- data.frame(
@@ -33,10 +28,20 @@ res_uniform <- params |>
     .progress = TRUE
   )
 
+# res_uniform2 <- params |>
+#   purrr::pmap(
+#     risk_assessment,
+#     prior_pi = "uniform", 
+#     Ncell = 1e6,
+#     I = 1:4, J=1:5,
+#     .progress = TRUE
+#   )
+# le résultat est indépendant du nombre de cellules !
 
-census_tab1 = read.csv(file.path("data", "freq_census_tab1.csv")) #78.7% de cases < 11 et 8.0% de cases > 30
-census_tab1 |> filter(i > 0, i < 5) |> summarise(sum(p_hat)) #59.2% de cases < 5 et 11.7% de cases > 20
-census_tab1 |> filter(i > 20) |> summarise(sum(p_hat))
+census_tab1 = read.csv(file.path("data", "freq_census_tab1.csv")) 
+census_tab1 |> filter(i > 0, i < 5) |> summarise(sum(p_hat)) #37.7% de cases < 5
+census_tab1 |> filter(i > 20) |> summarise(sum(p_hat)) #7.5%
+census_tab1 |> filter(i == 0) |> summarise(sum(p_hat)) #36.2%
 
 res_tab1 <- params |> 
   purrr::pmap(

@@ -13,7 +13,7 @@ str(census_tab)
 unlink(temp)
 
 nrow(census_tab) # plus de 3 millions de cases
-census_tab |> filter(NB == 0) |> nrow() 
+census_tab |> filter(NB < 1) |> nrow() 
 census_tab |> filter(NB == 1) |> nrow() 
 summary(census_tab$NB)
 # un tableau avec très peu de zéros 
@@ -21,9 +21,13 @@ summary(census_tab$NB)
 
 hist(census_tab |> filter(NB < 100) |> pull(NB), breaks = 0:100)
 
+nb_zeros <- census_tab |> filter(NB < 1) |> nrow() +
+  (length(unique(census_tab$CODGEO)) * length(unique(census_tab$DIPL_19)) * length(unique(census_tab$AGEQ65)) * length(unique(census_tab$SEXE)) - nrow(census_tab))
+
 freq_cens_tab <- census_tab |>
   group_by(i=NB) |>
   summarise(N = n(), .groups="drop") |>
+  mutate(N = ifelse(i==0,nb_zeros,N)) |>
   mutate(p_hat = N/sum(N))
 
 freq_cens_tab |>
@@ -38,9 +42,13 @@ purrr::map(5:11, \(s) freq_cens_tab |> filter(i > 0 & i < s) |> summarise(p_sens
 
 # Second tableau: par département
 census_tab2 <- census_tab |>
-  select(-CODGEO, -LIBGEO) |>
+  select(-CODGEO, -LIBGEO,-NIVGEO) |>
   group_by(across(where(is.character))) |>
   summarise(NB = sum(NB), .groups="drop")
+
+nb_zeros2 <- census_tab2 |> filter(NB < 1) |> nrow() +
+  (length(unique(census_tab2$DEP)) * length(unique(census_tab2$DIPL_19)) * length(unique(census_tab2$AGEQ65)) * length(unique(census_tab2$SEXE)) - nrow(census_tab2))
+
 
 nrow(census_tab2) # 15318 cases
 census_tab2 |> filter(NB == 0) |> nrow() 
@@ -52,8 +60,8 @@ summary(census_tab2$NB)
 freq_cens_tab2 <- census_tab2 |>
   group_by(i=NB) |>
   summarise(N = n(), .groups="drop") |>
+  mutate(N = ifelse(i==0,nb_zeros2,N)) |>
   mutate(p_hat = N/sum(N))
-
 
 freq_cens_tab2 |>
   filter(i < 100) |>
