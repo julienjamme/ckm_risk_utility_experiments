@@ -34,32 +34,6 @@ resu_tab1 <-
     .progress = TRUE
   )
 
-resu_tab1 |>
-  # purrr::list_rbind() |>
-  filter(!is.na(U1)) |>
-  full_join(
-    res_all |> # results from risk_experiment.R
-      filter(type == "tab1")) |>
-  ggplot() +
-  geom_line(
-    aes(x=U3, y=risk, color = as.factor(js), linetype = as.factor(D)) 
-  ) +
-  geom_point(
-    aes(x=U3, y=risk, shape = as.factor(V), color = as.factor(js))
-  ) +
-  geom_hline(yintercept = 0.5, color = "grey25") +
-  geom_vline(xintercept = 0.7, color = "grey25") +
-  labs(x = "Risk Interval", y = "V") +
-  scale_y_continuous("Risk", breaks = seq(0,1,0.1), labels = seq(0,1,0.1), expand = c(0,0), limits = c(0.5,1)) +
-  scale_x_continuous("Utility", breaks = seq(0,1,0.1), labels = seq(0,1,0.1), expand = c(0,0), limits = c(0.7,1)) +
-  scale_color_brewer("js", type="qual", palette=1) +
-  scale_shape_discrete("V") +
-  scale_linetype_discrete("D") +
-  theme(legend.position = "bottom", legend.title.position = "top", panel.grid.minor = element_blank()) 
-
-ggsave("risk_utility_TO_tab1.pdf", device = "pdf", units="cm",width = 24,height=15)
-  
-  
 
 
 

@@ -7,7 +7,7 @@ library(furrr)
 source("R/risk_assessment.R")
 source("R/utility_assessment.R")
 
-s = 11 # confidentiality threshold
+s = 5 # confidentiality threshold
 
 params <- read.csv(
   file = file.path("data", paste0("params",".csv")),
@@ -55,7 +55,7 @@ all_results_l <- future_imap(
       utility_assessment,
       freq = fr$freq,
       freq_name = na,
-      precision = 5,
+      precision = 3,
       .progress = TRUE
     ) |>
       purrr::list_rbind()

@@ -1,3 +1,6 @@
+library(dplyr)
+library(purrr)
+library(ggplot2)
 
 source("R/risk_assessment.R")
 
@@ -103,7 +106,7 @@ res_all |> filter(type %in% c("uniform","tab1")) |>
   labs(x = "Risk Interval", y = "V", title = "Range of risk assessment", subtitle = "Comparison of uniform prior and empirical frequencies (highly ventilated)") +
   scale_y_continuous("V", breaks = c(2.5, 5, 10, 15), labels = c(2.5, 5, 10, 15), expand = c(0,0), limits = c(0,16)) +
   scale_x_continuous("Risk assessment", breaks = seq(0,1,0.25), labels = seq(0,1,0.25), expand = c(0,0), limits = c(0,1)) +
-  scale_color_brewer("js", type="qual", palette=1) +
+  scale_color_manual("js", values = c("0" = "#377eb8", "2" = "orangered", "4" = "grey15")) + #type="qual", palette=6) +
   scale_shape_manual(name = "Prior", values = c(uniform = 21, tab1 = 22), labels = c(uniform="Uniform", tab1="Frequency")) +
   theme(legend.position = "bottom", panel.grid.minor = element_blank()) 
 
@@ -123,7 +126,7 @@ res_all |> filter(type %in% c("uniform","tab2")) |>
   labs(x = "Risk Interval", y = "V", title = "Range of risk assessment", subtitle = "Comparison of uniform prior and empirical frequencies (highly aggregated)") +
   scale_y_continuous("V", breaks = c(2.5, 5, 10, 15), labels = c(2.5, 5, 10, 15), expand = c(0,0), limits = c(0,16)) +
   scale_x_continuous("Risk assessment", breaks = seq(0,1,0.25), labels = seq(0,1,0.25), expand = c(0,0), limits = c(0,1)) +
-  scale_color_brewer("js", type="qual", palette=1) +
+  scale_color_manual("js", values = c("0" = "#377eb8", "2" = "orangered", "4" = "grey15")) + #type="qual", palette=6) +
   scale_shape_manual(name = "Prior", values = c(uniform = 21, tab2 = 22), labels = c(uniform="Uniform", tab2="Frequency")) +
   theme(legend.position = "bottom", panel.grid.minor = element_blank()) 
 

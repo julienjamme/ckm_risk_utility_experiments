@@ -57,5 +57,9 @@ p1 +
 
 # Risque / Utilité -------------------
 
-
+all_RUs |> filter(tab == tab[1]) |>
+  ggplot() + 
+  geom_point(aes(x=U3, y=R2, color = as.factor(js)), alpha=0.55) +
+  geom_line(aes(x=U3, y=R2, group = as.factor(D), color = as.factor(D)), alpha = 0.55) +
+  facet_grid(tab~js, label=labeller(js="label_both"))
 

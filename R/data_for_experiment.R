@@ -1,3 +1,5 @@
+library(dplyr)
+
 # recup tableaux statistiques du recensement de la population
 
 temp <- tempfile()
