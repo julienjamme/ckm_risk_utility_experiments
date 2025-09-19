@@ -17,4 +17,5 @@ Imports:
     latex2exp,
     ptable,
     purrr,
-    tictoc
+    tictoc,
+    latex2exp
