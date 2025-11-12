@@ -1,4 +1,8 @@
 #
+library(dplyr)
+library(purrr)
+library(ggplot2)
+library(latex2exp)
 
 source("R/quanti/risk_assessment_scenarios.R")
 
@@ -9,7 +13,7 @@ k <- 0.8
 rho_grid <- seq(0, 1, length.out = 101)
 
 # Jeu de paramètres à tester
-params <- expand_grid(
+params <- tidyr::expand_grid(
   k = k,
   rho = rho_grid,
   n = c(0, 1, 2, 3, 4, 5, 6),

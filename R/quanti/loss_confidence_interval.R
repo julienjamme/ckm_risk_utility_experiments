@@ -29,7 +29,7 @@ params <- expand_grid(
   rho = rho_grid,
   n = c(0, 1, 2, 3, 4, 5, 6),
   sigma_nu = c(0.05, 0.1, 0.25, 0.5, 1),
-  sigma_eps = c(0, 0.01, 0.05)
+  sigma_eps = c(0, 0.01, 0.025, 0.05)
 )
 
 ic_g_res <- bind_cols(params, params |> pmap(ic_g_rho) |> list_rbind())
@@ -67,19 +67,22 @@ ic_g_res |>
 
 ic_g_res |>
   filter(sigma_eps > 0, sigma_nu > 0, n > 0) |>
+  filter(sigma_nu > 0.05 & sigma_nu < 1) |>
+  filter(n %in% c(1,3,6)) |>
+  filter(sigma_eps %in% c(0.025, 0.05)) |>
   ggplot(aes(x = rho, ymin = icgl, ymax = icgu, fill = as.factor(n))) +
   geom_ribbon(alpha = 0.2, aes(group = as.factor(n))) +
   facet_grid(sigma_eps~sigma_nu, labeller = labeller(sigma_nu = label_nu, sigma_eps = label_eps)) +
   geom_line(aes(y = icgu, group = as.factor(n), color = as.factor(n)), alpha = 0.7) +
   geom_line(aes(y = icgl, group = as.factor(n), color = as.factor(n)), alpha = 0.7) +
   labs(
-    title = TeX("Intervalle de Confiance à 95% de $g(\\rho)$ en fonction de $\\rho$"),
+    title = TeX("Intervalle de Confiance à 95% de la perte d'information en fonction de $\\rho$"),
     x = expression(rho),
     y = "Perte d'information (en %)",
     color = TeX("$n$"),
     fill = TeX("$n$")
   ) +
   scale_x_continuous(breaks = seq(0,1,0.2)) + 
-  scale_y_continuous(breaks = seq(-2,2,0.5), labels = seq(-2,2,0.5)*100) +
+  scale_y_continuous(breaks = seq(-2,2,0.25), labels = seq(-2,2,0.25)*100) +
   geom_vline(aes(xintercept=k), linetype = "dashed", color = "grey35") +
   theme_minimal()
