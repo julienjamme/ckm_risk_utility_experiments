@@ -15,6 +15,12 @@ ic_g_rho <- function(rho, n, sigma_nu, sigma_eps, error = 0.05) {
   return(tibble(icgl = lower, icgu = upper))
 }
 
+# Fonction donnant l'espérance de l'écart relatif absolu (en %)
+expect_abs_g_rho <- function(rho, n, sigma_nu, sigma_eps) {
+  res <- sqrt(2/pi * ((rho^n*sigma_nu)^2 + sigma_eps^2))
+  return(tibble(exp_abs_g = res*100))
+}
+
 n_optim <- function(rho, gamma, k, error){
   q_val <- qnorm(1-error/2)
   return((log(gamma) - log(q))/log(k))
@@ -33,6 +39,9 @@ params <- expand_grid(
 )
 
 ic_g_res <- bind_cols(params, params |> pmap(ic_g_rho) |> list_rbind())
+expect_abs_g <- params |> 
+  mutate(expect_abs_g = sqrt(2/pi * ((rho^n*sigma_nu)^2 + sigma_eps^2)) * 100)
+
 
 # Visualisation
 
@@ -85,4 +94,27 @@ ic_g_res |>
   scale_x_continuous(breaks = seq(0,1,0.2)) + 
   scale_y_continuous(breaks = seq(-2,2,0.25), labels = seq(-2,2,0.25)*100) +
   geom_vline(aes(xintercept=k), linetype = "dashed", color = "grey35") +
+  theme_minimal()
+
+
+
+expect_abs_g |>
+  filter(sigma_eps > 0, sigma_nu > 0, n > 0) |>
+  filter(sigma_nu > 0.05 & sigma_nu < 1) |>
+  filter(n %in% c(1,3,6)) |>
+  filter(sigma_eps %in% c(0.025, 0.05)) |>
+  ggplot(aes(x = rho, y = expect_abs_g, color = as.factor(n))) +
+  geom_line(aes(group = as.factor(n)), alpha = 0.7) +
+  facet_grid(sigma_eps~sigma_nu, labeller = labeller(sigma_nu = label_nu, sigma_eps = label_eps)) +
+  labs(
+    title = TeX("Espérance de l'écart relatif absolu en fonction de $\\rho$"),
+    x = expression(rho),
+    y = "Perte d'information (en %)",
+    color = TeX("$n$")
+  ) +
+  scale_x_continuous(breaks = seq(0,1,0.2)) + 
+  scale_y_continuous(breaks = seq(0,1,0.1)*100, labels = seq(0,1,0.1)*100) +
+  geom_vline(aes(xintercept=k), linetype = "dashed",  color = "grey35") +
+  geom_vline(aes(xintercept=0), color = "grey65") +
+  geom_hline(aes(yintercept=0), color = "grey65") +
   theme_minimal()
